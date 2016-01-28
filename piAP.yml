@@ -2,13 +2,15 @@
 - hosts: all 
   
   vars:
-    raspbian_sd : "{{ RASPBIAN_SD }}" 
+    raspbian_sd : "{{ RASPBIAN_SD }}"
+    wifi_pass : "{{ WIFI_PASS }}"
   
   tasks: 
     - debug: msg="{{ raspbian_sd  }}" 
     - copy: src=files/dnsmasq.conf dest={{ raspbian_sd  }}/etc/dnsmasq.conf owner=root group=wheel mode=0644
-    - copy: src=files/hostapd.conf dest={{ raspbian_sd  }}/etc/hostapd.conf owner=root group=wheel mode=0644
+    - template: src=templates/hostapd.conf dest={{ raspbian_sd  }}/etc/hostapd.conf owner=root group=wheel mode=0644
     - copy: src=files/interfaces dest={{ raspbian_sd  }}/etc/network/interfaces owner=root group=wheel mode=0644
+
     - copy: src=files/libnl-route-3-200_3.2.24-2_armhf.deb dest={{ raspbian_sd }}/var/tmp/libnl-route-3-200_3.2.24-2_armhf.deb owner=root group=wheel mode=0744
     - copy: src=files/libmnl0_1.0.3-5_armhf.deb dest={{ raspbian_sd  }}/var/tmp/libmnl0_1.0.3-5_armhf.deb owner=root group=wheel mode=0744 
     - copy: src=files/libnetfilter-conntrack3_1.0.4-1_armhf.deb dest={{ raspbian_sd  }}/var/tmp/libnetfilter-conntrack3_1.0.4-1_armhf.deb owner=root group=wheel mode=0744
