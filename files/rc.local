@@ -1,0 +1,37 @@
+#!/bin/bash
+ 
+VAR_FB=/var/lib/first-boot-setup
+ 
+if [[ ! -d $VAR_FB ]] ; then
+  mkdir $VAR_FB
+fi
+ 
+# checking if we already ran this script
+if [[ -f $VAR_FB/initialized ]] ; then
+  logger -t "first boot" "first boot setup already done, skipping"
+  echo "first boot setup already done, skipping"
+else
+  chown -R pi:pi /home/pi/.ssh 
+  dpkg -i /var/tmp/libmnl0*.deb
+  dpkg -i /var/tmp/libnetfilter*.deb
+  dpkg -i /var/tmp/libnl-route*.deb
+  dpkg --force-confold -i /var/tmp/dnsmasq-base*.deb
+  dpkg --force-confold -i /var/tmp/dnsmasq_*.deb
+  dpkg --force-confold -i /var/tmp/hostapd*.deb
+ 
+  echo 'SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="%MAC%", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="wlan*", NAME="adm-wlan42"' >> /etc/udev/rules.d/70-persistent-net.rules
+  sed -i "s/%MAC%/$(cat /sys/class/net/wlan0/address)/g" /etc/udev/rules.d/70-persistent-net.rules
+  sed -i "s/wlan0/adm-wlan42/g" /etc/network/interfaces
+  sed -i "s/#hostapd/hostapd/g" /etc/network/interfaces 
+  sed -i "s/wlan0/adm-wla42/g" /etc/dnsmasq.conf
+  sed -i "s/wlan0/adm-wlan42/g" /etc/hostapd.conf
+  touch $VAR_FB/initialized
+   
+  ifup adm-wlan42
+ 
+  logger -t "first boot" "first boot setup done !"
+  echo "first boot setup done !"
+  reboot
+fi
+ 
+exit 0
