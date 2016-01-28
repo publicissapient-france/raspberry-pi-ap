@@ -6,11 +6,16 @@
   
   tasks: 
     - debug: msg="{{ raspbian_sd  }}" 
-    - copy: src=files/dnsmasq.conf dest=/etc/dnsmasq.conf owner=root group=wheel mode=0644
-    - copy: src=files/hostpad.conf dest=/etc/hostapd.conf owner=root group=wheel mode=0644
-    - copy: src=files/interfaces dest=/etc/network/interfaces owner=root group=wheel mode=0644
-    - copy: src=files/libnetfilter-conntrack3_1.0.4-1_armhf.deb dest=/var/tmp/libnetfilter-conntrack3_1.0.4-1_armhf.deb owner=root group=wheel mode=0744
-    - copy: src=files/dnsmasq-base_2.72-3+deb8u1_armhf.deb dest=/var/tmp/dnsmasq-base_2.72-3+deb8u1_armhf.deb owner=root group=wheel mode=0744
-    - copy: src=files/ldnsmasq_2.72-3+deb8u1_all.deb dest=/var/tmp/ldnsmasq_2.72-3+deb8u1_all.deb owner=root group=wheel mode=0744
-    - copy: src=files/hostapd_2.3-1+deb8u3_armhf.deb dest=/var/tmp/hostapd_2.3-1+deb8u3_armhf.deb owner=root group=wheel mode=0744
-    - copy: src=files/first-boot-setup dest=/usr/local/sbin/first-boot-setup owner=root group=wheel mode=0744
+    - copy: src=files/dnsmasq.conf dest={{ raspbian_sd  }}/etc/dnsmasq.conf owner=root group=wheel mode=0644
+    - copy: src=files/hostpad.conf dest={{ raspbian_sd  }}/etc/hostapd.conf owner=root group=wheel mode=0644
+    - copy: src=files/interfaces dest={{ raspbian_sd  }}/etc/network/interfaces owner=root group=wheel mode=0644
+    - copy: src=files/libnetfilter-conntrack3_1.0.4-1_armhf.deb dest={{ raspbian_sd  }}/var/tmp/libnetfilter-conntrack3_1.0.4-1_armhf.deb owner=root group=wheel mode=0744
+    - copy: src=files/dnsmasq-base_2.72-3+deb8u1_armhf.deb dest={{ raspbian_sd  }}/var/tmp/dnsmasq-base_2.72-3+deb8u1_armhf.deb owner=root group=wheel mode=0744
+    - copy: src=files/ldnsmasq_2.72-3+deb8u1_all.deb dest={{ raspbian_sd  }}/var/tmp/ldnsmasq_2.72-3+deb8u1_all.deb owner=root group=wheel mode=0744
+    - copy: src=files/hostapd_2.3-1+deb8u3_armhf.deb dest={{ raspbian_sd  }}/var/tmp/hostapd_2.3-1+deb8u3_armhf.deb owner=root group=wheel mode=0744
+    - copy: src=files/first-boot-setup dest={{ raspbian_sd  }}/usr/local/sbin/first-boot-setup owner=root group=wheel mode=0744
+
+    - shell: echo "PasswordAuthentication no" >> {{ raspbian_sd  }}/etc/ssh/sshd_config
+    - file: path={{ raspbian_sd }}/home/pi/.ssh state=directory owner=1000 group=1000 mode=0755
+    - file: path={{ raspbian_sd }}/home/pi/.ssh/authorized_keys state=touch owner=1000 group=1000 mode=0644
+    - shell: cat ~/.ssh/id_rsa.pub >> {{ raspbian_sd }}/home/pi/.ssh/authorized_keys
