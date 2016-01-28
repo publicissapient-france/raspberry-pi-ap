@@ -1,0 +1,16 @@
+--- 
+- hosts: all 
+  
+  vars:
+    raspbian_sd : "{{ RASPBIAN_SD }}" 
+  
+  tasks: 
+    - debug: msg="{{ raspbian_sd  }}" 
+    - copy: src=files/dnsmasq.conf dest=/etc/dnsmasq.conf owner=root group=wheel mode=0644
+    - copy: src=files/hostpad.conf dest=/etc/hostapd.conf owner=root group=wheel mode=0644
+    - copy: src=files/interfaces dest=/etc/network/interfaces owner=root group=wheel mode=0644
+    - copy: src=files/libnetfilter-conntrack3_1.0.4-1_armhf.deb dest=/var/tmp/libnetfilter-conntrack3_1.0.4-1_armhf.deb owner=root group=wheel mode=0744
+    - copy: src=files/dnsmasq-base_2.72-3+deb8u1_armhf.deb dest=/var/tmp/dnsmasq-base_2.72-3+deb8u1_armhf.deb owner=root group=wheel mode=0744
+    - copy: src=files/ldnsmasq_2.72-3+deb8u1_all.deb dest=/var/tmp/ldnsmasq_2.72-3+deb8u1_all.deb owner=root group=wheel mode=0744
+    - copy: src=files/hostapd_2.3-1+deb8u3_armhf.deb dest=/var/tmp/hostapd_2.3-1+deb8u3_armhf.deb owner=root group=wheel mode=0744
+    - copy: src=files/first-boot-setup dest=/usr/local/sbin/first-boot-setup owner=root group=wheel mode=0744
